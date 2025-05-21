@@ -18,6 +18,11 @@
 			"Name": "AITokenCore",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "AITokenCoreEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	]
 }

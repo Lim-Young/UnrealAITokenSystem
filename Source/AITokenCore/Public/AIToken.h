@@ -19,13 +19,13 @@ enum class EAITokenState
 	Locked
 };
 
-UCLASS()
-class UAITokenAsset : public UObject
+UCLASS(BlueprintType)
+class AITOKENCORE_API UAITokenData : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Token Config")
+	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
 	FGameplayTag TokenTag;
 };
 
@@ -55,7 +55,7 @@ public:
 };
 
 UCLASS()
-class UAITokenContainer : public UObject
+class AITOKENCORE_API UAITokenContainer : public UObject
 {
 	GENERATED_BODY()
 

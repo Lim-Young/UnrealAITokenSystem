@@ -13,7 +13,7 @@ struct FAITokenSourceDefinition
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = "AITokenSource")
-	TMap<TObjectPtr<UAITokenAsset>, int> SourceTokens;
+	TMap<TObjectPtr<UAITokenData>, int> SourceTokens;
 };
 
 /**

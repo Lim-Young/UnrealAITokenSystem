@@ -1,7 +1,7 @@
 ﻿// Copyright Lim Young.
 
 
-#include "AITokenSource.h"
+#include "Core/AITokenSource.h"
 
 void UAITokenSource::AddOrResetToken(const FGameplayTag& TokenTag, const int TokenCount)
 {

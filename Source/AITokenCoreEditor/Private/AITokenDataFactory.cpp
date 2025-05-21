@@ -3,7 +3,7 @@
 
 #include "AITokenDataFactory.h"
 
-#include "AIToken.h"
+#include "Core/AIToken.h"
 
 UAITokenDataFactory::UAITokenDataFactory()
 {

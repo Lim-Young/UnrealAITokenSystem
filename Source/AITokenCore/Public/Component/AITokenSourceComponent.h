@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AITokenSource.h"
+#include "Core/AITokenSource.h"
 #include "Components/ActorComponent.h"
 #include "AITokenSourceComponent.generated.h"
 

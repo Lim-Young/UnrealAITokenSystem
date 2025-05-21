@@ -1,7 +1,7 @@
 ﻿// Copyright Lim Young.
 
 
-#include "AIToken.h"
+#include "Core/AIToken.h"
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(AIToken, "AIToken", "AI token root tag");
 

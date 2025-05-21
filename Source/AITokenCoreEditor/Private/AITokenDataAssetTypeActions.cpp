@@ -3,7 +3,7 @@
 
 #include "AITokenDataAssetTypeActions.h"
 
-#include "AIToken.h"
+#include "Core/AIToken.h"
 
 
 UClass* FAITokenDataAssetTypeActions::GetSupportedClass() const

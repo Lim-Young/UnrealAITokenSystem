@@ -17,7 +17,7 @@ void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSource
 {
 	for (const auto& SourceToken : TokenSourceDefinition.SourceTokens)
 	{
-		if (IsValid(SourceToken.Key))
+		if (IsValid(SourceToken.Key) && SourceToken.Value > 0)
 		{
 			AddOrResetToken(SourceToken.Key.Get()->TokenTag, SourceToken.Value);
 		}

@@ -1,0 +1,23 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UnrealAITokenSystem",
+	"Description": "A DOOM-inspired AI token system designed to manage multi-enemy combat experiences in games.",
+	"Category": "AI",
+	"CreatedBy": "Lim Young",
+	"CreatedByURL": "https://github.com/Lim-Young",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AITokenCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

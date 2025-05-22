@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AITokenHolder.h"
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
+#include "Condition/AITokenConditionPredicate.h"
+#include "StructUtils/InstancedStruct.h"
 #include "UObject/Object.h"
 #include "AIToken.generated.h"
+
+class UAITokenHolder;
+DECLARE_LOG_CATEGORY_EXTERN(LogAITokenSystem, Log, All);
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(AIToken);
 
@@ -27,15 +31,23 @@ class AITOKENCORE_API UAITokenData : public UObject
 public:
 	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
 	FGameplayTag TokenTag;
+
+	UPROPERTY(EditAnywhere, Category = "Token Condition",
+		meta = (BaseStruct = "/Script/AITokenCore.AITokenConditionPredicate", ExcludeBasestruct))
+	FInstancedStruct AITokenAcquireCondition;
 };
 
 /**
- * 
+ * The UAIToken Outer is the UAITokenSource
  */
 UCLASS()
 class AITOKENCORE_API UAIToken : public UObject
 {
 	GENERATED_BODY()
+
+	friend class UAITokenSource;
+
+	FAITokenConditionPredicate AcquireCondition;
 
 public:
 	FGameplayTag TokenTag;
@@ -45,6 +57,11 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAITokenHolder> Holder = nullptr;
 
+	UPROPERTY()
+	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
+
+	void InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerSource);
+
 	bool AcquireToken(UAITokenHolder* InHolder);
 
 	bool LockToken(UAITokenHolder* InHolder);
@@ -52,6 +69,8 @@ public:
 	bool PreemptToken(UAITokenHolder* InHolder);
 
 	bool ReleaseToken();
+
+	UAITokenSource* GetOwnerSource() const;
 };
 
 UCLASS()
@@ -65,7 +84,7 @@ public:
 	UPROPERTY()
 	TArray<UAIToken*> Tokens;
 
-	void InitAITokenContainer(const FGameplayTag TokenTag, const int TokenCount);
+	void InitAITokenContainer(FGameplayTag TokenTag, int TokenCount, UAITokenSource* Source);
 
 	void ReleaseAllToken();
 

@@ -21,11 +21,29 @@ void UAITokenHolderComponent::BeginPlay()
 
 void UAITokenHolderComponent::InitAITokenHolder()
 {
-	if (AITokenHolder != nullptr)
+	if (!AITokenHolder)
 	{
 		AITokenHolder = NewObject<UAITokenHolder>(this);
 		check(AITokenHolder);
 
 		AITokenHolder->InitTokenHolder(Priority);
 	}
+}
+
+UAITokenHolder* UAITokenHolderComponent::GetAITokenHolder() const
+{
+	return AITokenHolder;
+}
+
+FGameplayTag UAITokenHolderComponent::GetHeldTokenTag() const
+{
+	if (AITokenHolder != nullptr)
+	{
+		if (const UAIToken* Token = AITokenHolder->GetHeldToken())
+		{
+			return Token->TokenTag;
+		}
+	}
+
+	return FGameplayTag();
 }

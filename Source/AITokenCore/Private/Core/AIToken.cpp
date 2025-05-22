@@ -3,7 +3,18 @@
 
 #include "Core/AIToken.h"
 
+#include "Core/AITokenSource.h"
+
+DEFINE_LOG_CATEGORY(LogAITokenSystem);
+
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(AIToken, "AIToken", "AI token root tag");
+
+void UAIToken::InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerSource)
+{
+	TokenState = EAITokenState::Free;
+	TokenTag = InTokenTag;
+	OwnerSource = InOwnerSource;
+}
 
 bool UAIToken::AcquireToken(UAITokenHolder* InHolder)
 {
@@ -11,7 +22,6 @@ bool UAIToken::AcquireToken(UAITokenHolder* InHolder)
 	{
 		TokenState = EAITokenState::Held;
 		Holder = InHolder;
-		Holder->HoldToken(this);
 		return true;
 	}
 	return false;
@@ -44,34 +54,36 @@ bool UAIToken::ReleaseToken()
 	if (TokenState != EAITokenState::Free)
 	{
 		TokenState = EAITokenState::Free;
-		if (Holder)
-		{
-			Holder->ReleaseToken();
-		}
 		Holder = nullptr;
 		return true;
 	}
 	return false;
 }
 
+UAITokenSource* UAIToken::GetOwnerSource() const
+{
+	return OwnerSource;
+}
+
 UAITokenContainer* UAITokenContainer::NewAITokenContainer(const FGameplayTag TokenTag, const int TokenCount,
-	UObject* Outer)
+                                                          UObject* Outer)
 {
 	UAITokenContainer* TokenContainer = NewObject<UAITokenContainer>(Outer);
 	if (TokenContainer)
 	{
-		TokenContainer->InitAITokenContainer(TokenTag, TokenCount);
+		TokenContainer->InitAITokenContainer(TokenTag, TokenCount, CastChecked<UAITokenSource>(Outer));
 	}
 	return TokenContainer;
 }
 
-void UAITokenContainer::InitAITokenContainer(const FGameplayTag TokenTag, const int TokenCount)
+void UAITokenContainer::InitAITokenContainer(const FGameplayTag TokenTag, const int TokenCount, UAITokenSource* Source)
 {
-	Tokens.SetNum(TokenCount);
+	Tokens.Empty(TokenCount);
 	for (int i = 0; i < TokenCount; i++)
 	{
-		Tokens[i]->TokenTag = TokenTag;
-		Tokens[i]->TokenState = EAITokenState::Free;
+		UAIToken* Token = NewObject<UAIToken>(this);
+		Token->InitToken(TokenTag, Source);
+		Tokens.Add(Token);
 	}
 }
 

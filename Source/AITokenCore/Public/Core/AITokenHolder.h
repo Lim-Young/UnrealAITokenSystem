@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AITokenSource.h"
 #include "UObject/Object.h"
 #include "AITokenHolder.generated.h"
 
@@ -29,13 +30,11 @@ protected:
 public:
 	void InitTokenHolder(const uint8 InPriority);
 
-private:
-	// Only Use for AIToken
-	void HoldToken(UAIToken* InToken);
-	void ReleaseToken();
-	// End
-
 public:
 	UAIToken* GetHeldToken() const;
 	bool IsHoldingToken() const;
+
+public:
+	bool AcquireTokenFromSource(UAITokenSource* Source, const FGameplayTag& TokenTag);
+	bool ReleaseHeldToken();
 };

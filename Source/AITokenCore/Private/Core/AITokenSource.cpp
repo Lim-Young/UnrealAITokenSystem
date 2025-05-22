@@ -3,60 +3,51 @@
 
 #include "Core/AITokenSource.h"
 
-void UAITokenSource::AddOrResetToken(const FGameplayTag& TokenTag, const int TokenCount)
+void UAITokenSource::AddOrResetToken(UAITokenData* TokenData, const int TokenCount)
 {
-	if (Tokens.Contains(TokenTag) || !Tokens[TokenTag])
+	if (!IsValid(TokenData))
 	{
-		Tokens[TokenTag]->ReleaseAllToken();;
+		UE_LOG(LogAITokenSystem, Warning, TEXT("Invalid TokenData provided to AddOrResetToken"));
+		return;
 	}
 
-	Tokens.Emplace(TokenTag, UAITokenContainer::NewAITokenContainer(TokenTag, TokenCount, this));
+	if (Tokens.Contains(TokenData->TokenTag) && Tokens.Find(TokenData->TokenTag))
+	{
+		Tokens[TokenData->TokenTag]->ReleaseAllToken();;
+	}
+
+	Tokens.Emplace(TokenData->TokenTag, UAITokenContainer::NewAITokenContainer(TokenData->TokenTag, TokenCount, this));
 }
 
 void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSourceDefinition)
 {
+	Tokens.Empty();
+	
 	for (const auto& SourceToken : TokenSourceDefinition.SourceTokens)
 	{
 		if (IsValid(SourceToken.Key) && SourceToken.Value > 0)
 		{
-			AddOrResetToken(SourceToken.Key.Get()->TokenTag, SourceToken.Value);
+			AddOrResetToken(SourceToken.Key, SourceToken.Value);
 		}
 	}
 }
 
-bool UAITokenSource::TakeToken(UAITokenHolder* TokenHolder, const FGameplayTag& TokenTag)
+UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag)
 {
-	if (!IsValid(TokenHolder))
-	{
-		return false;
-	}
-
 	if (!Tokens.Contains(TokenTag) || !Tokens[TokenTag])
 	{
-		return false;
+		return nullptr;
 	}
 
 	UAIToken* Token = nullptr;
 	if (Tokens[TokenTag]->TryGetFreeToken(Token))
 	{
-		Token->AcquireToken(TokenHolder);
-		return true;
+		return Token;
 	}
 	else
 	{
 		// TODO: Try to preempt token
 	}
 
-	return false;
-}
-
-bool UAITokenSource::ReturnToken(UAITokenHolder* TokenHolder, const FGameplayTag& TokenTag, const int TokenCount)
-{
-	if (!TokenHolder || !TokenHolder->IsHoldingToken())
-	{
-		return false;
-	}
-
-	TokenHolder->GetHeldToken()->ReleaseToken();
-	return true;
+	return nullptr;
 }

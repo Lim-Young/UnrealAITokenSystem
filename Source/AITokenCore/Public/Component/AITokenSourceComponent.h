@@ -31,4 +31,7 @@ public:
 
 protected:
 	void InitAITokenSource();
+
+public:
+	UAITokenSource* GetAITokenSource() const;
 };

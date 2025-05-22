@@ -30,4 +30,10 @@ private:
 	TObjectPtr<UAITokenHolder> AITokenHolder;
 
 	void InitAITokenHolder();
+
+public:
+	UAITokenHolder* GetAITokenHolder() const;
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenHolder")
+	FGameplayTag GetHeldTokenTag() const;
 };

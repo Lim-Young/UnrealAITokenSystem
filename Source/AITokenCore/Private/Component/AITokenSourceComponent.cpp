@@ -29,3 +29,8 @@ void UAITokenSourceComponent::InitAITokenSource()
 		AITokenSource->InitTokenSource(AITokenSourceDefinition);
 	}
 }
+
+UAITokenSource* UAITokenSourceComponent::GetAITokenSource() const
+{
+	return AITokenSource;
+}

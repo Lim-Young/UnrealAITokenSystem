@@ -34,5 +34,5 @@ class AITOKENCORE_API UAITokenSource : public UObject
 public:
 	void InitTokenSource(const FAITokenSourceDefinition& TokenSourceDefinition);
 
-	UAIToken* TakeToken(const FGameplayTag& TokenTag);
+	UAIToken* TakeToken(const FGameplayTag& TokenTag, UAITokenHolder* Holder);
 };

@@ -19,7 +19,9 @@ protected:
 	bool bReverse = false;
 
 public:
-	virtual bool Evaluate(FAITokenConditionContext Context) const;
+	virtual void Initialize(const FAITokenConditionContext& Context);
+	virtual bool Evaluate(const FAITokenConditionContext& Context) const;
+	virtual void Cleanup(const FAITokenConditionContext& Context);
 };
 
 UCLASS()
@@ -30,7 +32,10 @@ class AITOKENCORE_API UAITokenConditionPredicate_Single : public UAITokenConditi
 	UPROPERTY(EditAnywhere, Instanced)
 	TObjectPtr<UAITokenCondition> Condition = nullptr;
 
-	virtual bool Evaluate(FAITokenConditionContext Context) const override;
+protected:
+	virtual void Initialize(const FAITokenConditionContext& Context) override;
+	virtual bool Evaluate(const FAITokenConditionContext& Context) const override;
+	virtual void Cleanup(const FAITokenConditionContext& Context) override;
 };
 
 UCLASS()
@@ -41,7 +46,7 @@ class AITOKENCORE_API UAITokenConditionPredicate_And : public UAITokenConditionP
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<TObjectPtr<UAITokenConditionPredicate>> Predicates;
 
-	virtual bool Evaluate(FAITokenConditionContext Context) const override;
+	virtual bool Evaluate(const FAITokenConditionContext& Context) const override;
 };
 
 UCLASS()
@@ -52,5 +57,5 @@ class AITOKENCORE_API UAITokenConditionPredicate_Or : public UAITokenConditionPr
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<TObjectPtr<UAITokenConditionPredicate>> Predicates;
 
-	virtual bool Evaluate(FAITokenConditionContext Context) const override;
+	virtual bool Evaluate(const FAITokenConditionContext& Context) const override;
 };

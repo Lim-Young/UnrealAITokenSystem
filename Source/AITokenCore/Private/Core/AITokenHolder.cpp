@@ -41,7 +41,7 @@ bool UAITokenHolder::AcquireTokenFromSource(UAITokenSource* Source, const FGamep
 		}
 	}
 
-	UAIToken* Token = Source->TakeToken(TokenTag);
+	UAIToken* Token = Source->TakeToken(TokenTag, this);
 	if (IsValid(Token))
 	{
 		if (Token->GrantedTo(this))

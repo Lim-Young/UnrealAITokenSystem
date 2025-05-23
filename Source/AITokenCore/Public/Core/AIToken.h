@@ -71,7 +71,10 @@ private:
 	// bool PreemptToken(UAITokenHolder* InHolder);
 	bool Release();
 
-	bool CheckAcquireCondition() const;
+private:
+	void InitializeAcquireCondition(const FAITokenConditionContext& Context) const;
+	bool CheckAcquireCondition(const FAITokenConditionContext& Context) const;
+	void CleanupAcquireCondition(const FAITokenConditionContext& Context) const;
 
 public:
 	UAITokenSource* GetOwnerSource() const;
@@ -85,6 +88,9 @@ class AITOKENCORE_API UAITokenContainer : public UObject
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
+	
 public:
 	static UAITokenContainer* NewAITokenContainer(const UAITokenData* TokenData, int TokenCount, UObject* Outer);
 
@@ -95,7 +101,7 @@ public:
 
 	void ReleaseAllToken();
 
-	bool TryGetFreeToken(UAIToken*& OutToken);
+	bool TryGetCanAcquireToken(UAITokenHolder* Holder, UAIToken*& OutToken);
 
-	bool TryGetAllHeldToken(TArray<UAIToken*>& OutTokens);
+	bool TryGetAllCanPreemptTokens(TArray<UAIToken*>& OutTokens);
 };

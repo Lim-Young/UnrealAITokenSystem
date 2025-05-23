@@ -17,6 +17,7 @@ void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwne
 	OwnerSource = InOwnerSource;
 
 	AcquireCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenAcquireCondition, this);
+	AcquireCondition->Initialize(FAITokenConditionContext(InOwnerSource, nullptr));
 }
 
 bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
@@ -90,6 +91,8 @@ bool UAIToken::Release()
 
 	if (TokenState == EAITokenState::Held)
 	{
+		CleanupAcquireCondition(FAITokenConditionContext(OwnerSource, Holder));
+
 		TokenState = EAITokenState::Free;
 		Holder = nullptr;
 		return true;
@@ -99,14 +102,34 @@ bool UAIToken::Release()
 	return false;
 }
 
-bool UAIToken::CheckAcquireCondition() const
+void UAIToken::InitializeAcquireCondition(const FAITokenConditionContext& Context) const
+{
+	if (!IsValid(AcquireCondition))
+	{
+		return;
+	}
+
+	AcquireCondition->Initialize(Context);
+}
+
+bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context) const
 {
 	if (!IsValid(AcquireCondition))
 	{
 		return true;
 	}
 
-	return AcquireCondition->Evaluate(FAITokenConditionContext(OwnerSource, Holder));
+	return AcquireCondition->Evaluate(Context);
+}
+
+void UAIToken::CleanupAcquireCondition(const FAITokenConditionContext& Context) const
+{
+	if (!IsValid(AcquireCondition))
+	{
+		return;
+	}
+
+	AcquireCondition->Cleanup(Context);
 }
 
 UAITokenSource* UAIToken::GetOwnerSource() const
@@ -138,6 +161,8 @@ UAITokenContainer* UAITokenContainer::NewAITokenContainer(const UAITokenData* To
 void UAITokenContainer::InitAITokenContainer(const UAITokenData* TokenData, const int TokenCount,
                                              UAITokenSource* Source)
 {
+	OwnerSource = Source;
+
 	Tokens.Empty(TokenCount);
 	for (int i = 0; i < TokenCount; i++)
 	{
@@ -154,37 +179,48 @@ void UAITokenContainer::ReleaseAllToken()
 		return;
 	}
 
-	for (UAIToken* Token : Tokens)
+	for (const UAIToken* Token : Tokens)
 	{
-		if (IsValid(Token))
+		if (!IsValid(Token))
 		{
-			if (Token->HasHolder())
-			{
-				if (Token->TokenState == EAITokenState::Locked)
-				{
-					Token->GetHolder()->UnlockHeldToken();
-				}
+			continue;
+		}
 
-				Token->GetHolder()->ReleaseHeldToken();
+		if (!Token->HasHolder())
+		{
+			continue;
+		}
+
+		if (Token->TokenState == EAITokenState::Locked)
+		{
+			if (!Token->GetHolder()->UnlockHeldToken())
+			{
+				continue;
 			}
 		}
+
+		Token->GetHolder()->ReleaseHeldToken();
 	}
 }
 
-bool UAITokenContainer::TryGetFreeToken(UAIToken*& OutToken)
+bool UAITokenContainer::TryGetCanAcquireToken(UAITokenHolder* Holder, UAIToken*& OutToken)
 {
+	const FAITokenConditionContext Context(OwnerSource, Holder);
 	for (UAIToken* Token : Tokens)
 	{
 		if (IsValid(Token) && Token->TokenState == EAITokenState::Free)
 		{
-			OutToken = Token;
-			return true;
+			if (Token->CheckAcquireCondition(Context))
+			{
+				OutToken = Token;
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
-bool UAITokenContainer::TryGetAllHeldToken(TArray<UAIToken*>& OutTokens)
+bool UAITokenContainer::TryGetAllCanPreemptTokens(TArray<UAIToken*>& OutTokens)
 {
 	TArray<UAIToken*> HeldTokens;
 

@@ -33,7 +33,7 @@ void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSource
 	}
 }
 
-UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag)
+UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag, UAITokenHolder* Holder)
 {
 	if (!Tokens.Contains(TokenTag))
 	{
@@ -46,14 +46,14 @@ UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag)
 	}
 
 	UAIToken* Token = nullptr;
-	if (Tokens[TokenTag]->TryGetFreeToken(Token))
+	if (Tokens[TokenTag]->TryGetCanAcquireToken(Holder, Token))
 	{
 		return Token;
 	}
 
 	// TODO: Try to preempt token
 	TArray<UAIToken*> TokensToPreempt;
-	if (Tokens[TokenTag]->TryGetAllHeldToken(TokensToPreempt))
+	if (Tokens[TokenTag]->TryGetAllCanPreemptTokens(TokensToPreempt))
 	{
 		for (UAIToken* TokenToPreempt : TokensToPreempt)
 		{

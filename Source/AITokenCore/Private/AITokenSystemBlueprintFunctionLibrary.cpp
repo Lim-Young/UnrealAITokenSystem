@@ -45,3 +45,23 @@ bool UAITokenSystemBlueprintFunctionLibrary::ReleaseAITokenToSource(UAITokenHold
 
 	return Holder->ReleaseHeldToken();
 }
+
+bool UAITokenSystemBlueprintFunctionLibrary::LockHeldToken(UAITokenHolderComponent* HolderComponent)
+{
+	if (IsValid(HolderComponent) && IsValid(HolderComponent->GetAITokenHolder()))
+	{
+		return HolderComponent->GetAITokenHolder()->LockHeldToken();
+	}
+
+	return false;
+}
+
+bool UAITokenSystemBlueprintFunctionLibrary::UnlockHeldToken(UAITokenHolderComponent* HolderComponent)
+{
+	if (IsValid(HolderComponent) && IsValid(HolderComponent->GetAITokenHolder()))
+	{
+		return HolderComponent->GetAITokenHolder()->UnlockHeldToken();
+	}
+
+	return false;
+}

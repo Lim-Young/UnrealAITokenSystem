@@ -37,4 +37,7 @@ public:
 public:
 	bool AcquireTokenFromSource(UAITokenSource* Source, const FGameplayTag& TokenTag);
 	bool ReleaseHeldToken();
+
+	bool LockHeldToken() const;
+	bool UnlockHeldToken() const;
 };

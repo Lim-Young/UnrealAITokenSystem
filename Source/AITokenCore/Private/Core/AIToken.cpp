@@ -28,13 +28,41 @@ bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
 	return false;
 }
 
-bool UAIToken::LockToken(UAITokenHolder* InHolder)
+bool UAIToken::LockToken()
 {
-	if (TokenState == EAITokenState::Held && Holder == InHolder)
+	if (!HasHolder())
+	{
+		UE_LOG(LogAITokenSystem, Verbose, TEXT("LockToken failed: Token has no holder"));
+		return false;
+	}
+
+	if (TokenState == EAITokenState::Locked)
+	{
+		UE_LOG(LogAITokenSystem, Verbose, TEXT("Token is already locked"));
+		return true;
+	}
+
+	if (TokenState == EAITokenState::Held)
 	{
 		TokenState = EAITokenState::Locked;
 		return true;
 	}
+
+	return false;
+}
+
+bool UAIToken::UnlockToken()
+{
+	if (TokenState == EAITokenState::Locked)
+	{
+		// Because the token is locked, so we can sure that the token has a holder
+		check(HasHolder())
+
+		TokenState = EAITokenState::Held;
+		return true;
+	}
+
+	UE_LOG(LogAITokenSystem, Verbose, TEXT("UnlockToken failed: Token is not locked"));
 	return false;
 }
 
@@ -52,12 +80,20 @@ bool UAIToken::LockToken(UAITokenHolder* InHolder)
 
 bool UAIToken::Release()
 {
-	if (TokenState != EAITokenState::Free)
+	if (TokenState == EAITokenState::Locked)
+	{
+		UE_LOG(LogAITokenSystem, Verbose, TEXT("Token is locked, cannot release"));
+		return false;
+	}
+
+	if (TokenState == EAITokenState::Held)
 	{
 		TokenState = EAITokenState::Free;
 		Holder = nullptr;
 		return true;
 	}
+
+	UE_LOG(LogAITokenSystem, Verbose, TEXT("Token is not held, cannot release"));
 	return false;
 }
 
@@ -111,6 +147,11 @@ void UAITokenContainer::ReleaseAllToken()
 		{
 			if (Token->HasHolder())
 			{
+				if (Token->TokenState == EAITokenState::Locked)
+				{
+					Token->GetHolder()->UnlockHeldToken();
+				}
+
 				Token->GetHolder()->ReleaseHeldToken();
 			}
 		}

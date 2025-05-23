@@ -16,7 +16,7 @@ UAIToken* UAITokenHolder::GetHeldToken() const
 
 bool UAITokenHolder::IsHoldingToken() const
 {
-	return HeldToken != nullptr;
+	return IsValid(HeldToken.Get());
 }
 
 bool UAITokenHolder::AcquireTokenFromSource(UAITokenSource* Source, const FGameplayTag& TokenTag)
@@ -70,5 +70,37 @@ bool UAITokenHolder::ReleaseHeldToken()
 	}
 
 	UE_LOG(LogAITokenSystem, Verbose, TEXT("Failed to release held token %s."), *HeldToken->GetName());
+	return false;
+}
+
+bool UAITokenHolder::LockHeldToken() const
+{
+	if (!IsHoldingToken())
+	{
+		UE_LOG(LogAITokenSystem, Verbose, TEXT("No token held to lock."));
+		return false;
+	}
+
+	if (HeldToken->LockToken())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool UAITokenHolder::UnlockHeldToken() const
+{
+	if (!IsHoldingToken())
+	{
+		UE_LOG(LogAITokenSystem, Verbose, TEXT("No token held to unlock."));
+		return false;
+	}
+
+	if (HeldToken->UnlockToken())
+	{
+		return true;
+	}
+
 	return false;
 }

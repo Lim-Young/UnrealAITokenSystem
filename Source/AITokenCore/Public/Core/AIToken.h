@@ -67,8 +67,8 @@ private:
 
 	bool GrantedTo(UAITokenHolder* InHolder);
 
-	bool LockToken(UAITokenHolder* InHolder);
-
+	bool LockToken();
+	bool UnlockToken();
 	// bool PreemptToken(UAITokenHolder* InHolder);
 
 	bool Release();

@@ -29,4 +29,12 @@ class AITOKENCORE_API UAITokenSystemBlueprintFunctionLibrary : public UBlueprint
 	static bool ReleaseAITokenToSourceComponent(UAITokenHolderComponent* HolderComponent);
 
 	static bool ReleaseAITokenToSource(UAITokenHolder* Holder);
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenSystem", DisplayName = "Lock Held Token",
+		meta = (GameplayTagFilter = AIToken))
+	static bool LockHeldToken(UAITokenHolderComponent* HolderComponent);
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenSystem", DisplayName = "Unlock Held Token",
+		meta = (GameplayTagFilter = AIToken))
+	static bool UnlockHeldToken(UAITokenHolderComponent* HolderComponent);
 };

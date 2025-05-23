@@ -17,7 +17,7 @@ void UAITokenSource::AddOrResetToken(UAITokenData* TokenData, const int TokenCou
 		Tokens[TokenData->TokenTag]->ReleaseAllToken();;
 	}
 
-	Tokens.Emplace(TokenData->TokenTag, UAITokenContainer::NewAITokenContainer(TokenData->TokenTag, TokenCount, this));
+	Tokens.Emplace(TokenData->TokenTag, UAITokenContainer::NewAITokenContainer(TokenData, TokenCount, this));
 }
 
 void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSourceDefinition)

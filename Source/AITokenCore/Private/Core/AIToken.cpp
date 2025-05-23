@@ -10,11 +10,13 @@ DEFINE_LOG_CATEGORY(LogAITokenSystem);
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(AIToken, "AIToken", "AI token root tag");
 
-void UAIToken::InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerSource)
+void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwnerSource)
 {
 	TokenState = EAITokenState::Free;
-	TokenTag = InTokenTag;
+	TokenTag = InTokenData->TokenTag;
 	OwnerSource = InOwnerSource;
+
+	AcquireCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenAcquireCondition, this);
 }
 
 bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
@@ -97,6 +99,16 @@ bool UAIToken::Release()
 	return false;
 }
 
+bool UAIToken::CheckAcquireCondition() const
+{
+	if (!IsValid(AcquireCondition))
+	{
+		return true;
+	}
+
+	return AcquireCondition->Evaluate(FAITokenConditionContext(OwnerSource, Holder));
+}
+
 UAITokenSource* UAIToken::GetOwnerSource() const
 {
 	return OwnerSource;
@@ -112,24 +124,25 @@ bool UAIToken::HasHolder() const
 	return IsValid(Holder.Get());
 }
 
-UAITokenContainer* UAITokenContainer::NewAITokenContainer(const FGameplayTag TokenTag, const int TokenCount,
+UAITokenContainer* UAITokenContainer::NewAITokenContainer(const UAITokenData* TokenData, const int TokenCount,
                                                           UObject* Outer)
 {
 	UAITokenContainer* TokenContainer = NewObject<UAITokenContainer>(Outer);
 	if (TokenContainer)
 	{
-		TokenContainer->InitAITokenContainer(TokenTag, TokenCount, CastChecked<UAITokenSource>(Outer));
+		TokenContainer->InitAITokenContainer(TokenData, TokenCount, CastChecked<UAITokenSource>(Outer));
 	}
 	return TokenContainer;
 }
 
-void UAITokenContainer::InitAITokenContainer(const FGameplayTag TokenTag, const int TokenCount, UAITokenSource* Source)
+void UAITokenContainer::InitAITokenContainer(const UAITokenData* TokenData, const int TokenCount,
+                                             UAITokenSource* Source)
 {
 	Tokens.Empty(TokenCount);
 	for (int i = 0; i < TokenCount; i++)
 	{
 		UAIToken* Token = NewObject<UAIToken>(Source);
-		Token->InitToken(TokenTag, Source);
+		Token->InitToken(TokenData, Source);
 		Tokens.Add(Token);
 	}
 }

@@ -4,28 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "AITokenCondition.h"
-#include "StructUtils/InstancedStruct.h"
 #include "AITokenConditionPredicate.generated.h"
 
 /**
  * 
  */
-USTRUCT(BlueprintType)
-struct AITOKENCORE_API FAITokenConditionPredicate
+UCLASS(Abstract, BlueprintType, DefaultToInstanced, EditInlineNew)
+class AITOKENCORE_API UAITokenConditionPredicate : public UObject
 {
 	GENERATED_BODY()
 
-	virtual ~FAITokenConditionPredicate() = default;
-
-
+protected:
 	UPROPERTY(EditAnywhere)
 	bool bReverse = false;
 
+public:
 	virtual bool Evaluate(FAITokenConditionContext Context) const;
 };
 
-USTRUCT()
-struct AITOKENCORE_API FAITokenConditionPredicate_Single : public FAITokenConditionPredicate
+UCLASS()
+class AITOKENCORE_API UAITokenConditionPredicate_Single : public UAITokenConditionPredicate
 {
 	GENERATED_BODY()
 
@@ -35,24 +33,24 @@ struct AITOKENCORE_API FAITokenConditionPredicate_Single : public FAITokenCondit
 	virtual bool Evaluate(FAITokenConditionContext Context) const override;
 };
 
-USTRUCT()
-struct AITOKENCORE_API FAITokenConditionPredicate_And : public FAITokenConditionPredicate
+UCLASS()
+class AITOKENCORE_API UAITokenConditionPredicate_And : public UAITokenConditionPredicate
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, meta = (BaseStruct = "/Script/AITokenCore.AITokenConditionPredicate", ExcludeBasestruct))
-	TArray<FInstancedStruct> Predicates;
+	UPROPERTY(EditAnywhere, Instanced)
+	TArray<TObjectPtr<UAITokenConditionPredicate>> Predicates;
 
 	virtual bool Evaluate(FAITokenConditionContext Context) const override;
 };
 
-USTRUCT()
-struct AITOKENCORE_API FAITokenConditionPredicate_Or : public FAITokenConditionPredicate
+UCLASS()
+class AITOKENCORE_API UAITokenConditionPredicate_Or : public UAITokenConditionPredicate
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, meta = (BaseStruct = "/Script/AITokenCore.AITokenConditionPredicate", ExcludeBasestruct))
-	TArray<FInstancedStruct> Predicates;
+	UPROPERTY(EditAnywhere, Instanced)
+	TArray<TObjectPtr<UAITokenConditionPredicate>> Predicates;
 
 	virtual bool Evaluate(FAITokenConditionContext Context) const override;
 };

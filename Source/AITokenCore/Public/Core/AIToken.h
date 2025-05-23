@@ -32,9 +32,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
 	FGameplayTag TokenTag;
 
-	UPROPERTY(EditAnywhere, Category = "Token Condition",
-		meta = (BaseStruct = "/Script/AITokenCore.AITokenConditionPredicate", ExcludeBasestruct))
-	FInstancedStruct AITokenAcquireCondition;
+	UPROPERTY(EditAnywhere, Category = "Token Condition")
+	TObjectPtr<UAITokenConditionPredicate> AITokenAcquireCondition;
 };
 
 /**
@@ -49,7 +48,8 @@ class AITOKENCORE_API UAIToken : public UObject
 	friend class UAITokenHolder;
 	friend class UAITokenContainer;
 
-	FAITokenConditionPredicate AcquireCondition;
+	UPROPERTY()
+	TObjectPtr<UAITokenConditionPredicate> AcquireCondition;
 
 public:
 	FGameplayTag TokenTag;
@@ -63,15 +63,15 @@ public:
 	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
 
 private:
-	void InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerSource);
+	void InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwnerSource);
 
 	bool GrantedTo(UAITokenHolder* InHolder);
-
 	bool LockToken();
 	bool UnlockToken();
 	// bool PreemptToken(UAITokenHolder* InHolder);
-
 	bool Release();
+
+	bool CheckAcquireCondition() const;
 
 public:
 	UAITokenSource* GetOwnerSource() const;
@@ -86,12 +86,12 @@ class AITOKENCORE_API UAITokenContainer : public UObject
 	GENERATED_BODY()
 
 public:
-	static UAITokenContainer* NewAITokenContainer(const FGameplayTag TokenTag, const int TokenCount, UObject* Outer);
+	static UAITokenContainer* NewAITokenContainer(const UAITokenData* TokenData, int TokenCount, UObject* Outer);
 
 	UPROPERTY()
 	TArray<UAIToken*> Tokens;
 
-	void InitAITokenContainer(FGameplayTag TokenTag, int TokenCount, UAITokenSource* Source);
+	void InitAITokenContainer(const UAITokenData* TokenData, int TokenCount, UAITokenSource* Source);
 
 	void ReleaseAllToken();
 

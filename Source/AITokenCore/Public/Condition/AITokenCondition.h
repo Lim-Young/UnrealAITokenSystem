@@ -15,10 +15,10 @@ struct AITOKENCORE_API FAITokenConditionContext
 	GENERATED_BODY()
 
 	FAITokenConditionContext() = default;
-	
+
 	FAITokenConditionContext(const TObjectPtr<UAITokenSource>& InTokenSource,
 	                         const TObjectPtr<UAITokenHolder>& InTokenHolder): TokenSource(InTokenSource),
-	                                                                    TokenHolder(InTokenHolder)
+	                                                                           TokenHolder(InTokenHolder)
 	{
 	}
 
@@ -32,12 +32,12 @@ struct AITOKENCORE_API FAITokenConditionContext
 /**
  * 
  */
-UCLASS(Abstract, DefaultToInstanced, EditInlineNew)
+UCLASS(Abstract, DefaultToInstanced, EditInlineNew, Blueprintable)
 class AITOKENCORE_API UAITokenCondition : public UObject
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	bool EvaluateCondition(FAITokenConditionContext Context) const;
+	bool EvaluateCondition(FAITokenConditionContext Context);
 };

@@ -4,12 +4,12 @@
 #include "Condition/AITokenConditionPredicate.h"
 
 
-bool FAITokenConditionPredicate::Evaluate(FAITokenConditionContext Context) const
+bool UAITokenConditionPredicate::Evaluate(FAITokenConditionContext Context) const
 {
 	return true;
 }
 
-bool FAITokenConditionPredicate_Single::Evaluate(const FAITokenConditionContext Context) const
+bool UAITokenConditionPredicate_Single::Evaluate(const FAITokenConditionContext Context) const
 {
 	if (!IsValid(Condition))
 	{
@@ -19,7 +19,7 @@ bool FAITokenConditionPredicate_Single::Evaluate(const FAITokenConditionContext 
 	return Condition->EvaluateCondition(Context);
 }
 
-bool FAITokenConditionPredicate_And::Evaluate(const FAITokenConditionContext Context) const
+bool UAITokenConditionPredicate_And::Evaluate(const FAITokenConditionContext Context) const
 {
 	if (Predicates.Num() == 0)
 	{
@@ -29,17 +29,16 @@ bool FAITokenConditionPredicate_And::Evaluate(const FAITokenConditionContext Con
 	bool bResult = true;
 	for (auto Predicate : Predicates)
 	{
-		if (const FAITokenConditionPredicate* AITokenConditionPredicate = Predicate.GetPtr<
-			FAITokenConditionPredicate>())
+		if (IsValid(Predicate))
 		{
-			bResult &= AITokenConditionPredicate->Evaluate(Context);
+			bResult &= Predicate->Evaluate(Context);
 		}
 	}
 
 	return bReverse ? !bResult : bResult;
 }
 
-bool FAITokenConditionPredicate_Or::Evaluate(const FAITokenConditionContext Context) const
+bool UAITokenConditionPredicate_Or::Evaluate(const FAITokenConditionContext Context) const
 {
 	if (Predicates.Num() == 0)
 	{
@@ -49,10 +48,9 @@ bool FAITokenConditionPredicate_Or::Evaluate(const FAITokenConditionContext Cont
 	bool bResult = false;
 	for (auto Predicate : Predicates)
 	{
-		if (const FAITokenConditionPredicate* AITokenConditionPredicate = Predicate.GetPtr<
-			FAITokenConditionPredicate>())
+		if (IsValid(Predicate))
 		{
-			bResult |= AITokenConditionPredicate->Evaluate(Context);
+			bResult |= Predicate->Evaluate(Context);
 		}
 	}
 

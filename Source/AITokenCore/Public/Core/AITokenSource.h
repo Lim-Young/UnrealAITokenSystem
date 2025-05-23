@@ -24,6 +24,7 @@ class AITOKENCORE_API UAITokenSource : public UObject
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
 	TMap<FGameplayTag, TObjectPtr<UAITokenContainer>> Tokens;
 
 	UAITokenSource() = default;

@@ -3,6 +3,7 @@
 
 #include "Core/AIToken.h"
 
+#include "Core/AITokenHolder.h"
 #include "Core/AITokenSource.h"
 
 DEFINE_LOG_CATEGORY(LogAITokenSystem);
@@ -16,7 +17,7 @@ void UAIToken::InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerS
 	OwnerSource = InOwnerSource;
 }
 
-bool UAIToken::AcquireToken(UAITokenHolder* InHolder)
+bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
 {
 	if (TokenState == EAITokenState::Free)
 	{
@@ -37,19 +38,19 @@ bool UAIToken::LockToken(UAITokenHolder* InHolder)
 	return false;
 }
 
-bool UAIToken::PreemptToken(UAITokenHolder* InHolder)
-{
-	// if (TokenState == EAITokenState::Held && Holder == InHolder)
-	// {
-	// 	TokenState = EAITokenState::Free;
-	// 	Holder = nullptr;
-	// 	return true;
-	// }
-	// return false;
-	return true;
-}
+// bool UAIToken::PreemptToken(UAITokenHolder* InHolder)
+// {
+// 	// if (TokenState == EAITokenState::Held && Holder == InHolder)
+// 	// {
+// 	// 	TokenState = EAITokenState::Free;
+// 	// 	Holder = nullptr;
+// 	// 	return true;
+// 	// }
+// 	// return false;
+// 	return true;
+// }
 
-bool UAIToken::ReleaseToken()
+bool UAIToken::Release()
 {
 	if (TokenState != EAITokenState::Free)
 	{
@@ -63,6 +64,16 @@ bool UAIToken::ReleaseToken()
 UAITokenSource* UAIToken::GetOwnerSource() const
 {
 	return OwnerSource;
+}
+
+UAITokenHolder* UAIToken::GetHolder() const
+{
+	return Holder;
+}
+
+bool UAIToken::HasHolder() const
+{
+	return IsValid(Holder.Get());
 }
 
 UAITokenContainer* UAITokenContainer::NewAITokenContainer(const FGameplayTag TokenTag, const int TokenCount,
@@ -81,7 +92,7 @@ void UAITokenContainer::InitAITokenContainer(const FGameplayTag TokenTag, const 
 	Tokens.Empty(TokenCount);
 	for (int i = 0; i < TokenCount; i++)
 	{
-		UAIToken* Token = NewObject<UAIToken>(this);
+		UAIToken* Token = NewObject<UAIToken>(Source);
 		Token->InitToken(TokenTag, Source);
 		Tokens.Add(Token);
 	}
@@ -98,7 +109,10 @@ void UAITokenContainer::ReleaseAllToken()
 	{
 		if (IsValid(Token))
 		{
-			Token->ReleaseToken();
+			if (Token->HasHolder())
+			{
+				Token->GetHolder()->ReleaseHeldToken();
+			}
 		}
 	}
 }
@@ -113,5 +127,26 @@ bool UAITokenContainer::TryGetFreeToken(UAIToken*& OutToken)
 			return true;
 		}
 	}
+	return false;
+}
+
+bool UAITokenContainer::TryGetAllHeldToken(TArray<UAIToken*>& OutTokens)
+{
+	TArray<UAIToken*> HeldTokens;
+
+	for (UAIToken* Token : Tokens)
+	{
+		if (IsValid(Token) && Token->TokenState == EAITokenState::Held)
+		{
+			HeldTokens.Add(Token);
+		}
+	}
+
+	if (HeldTokens.Num() > 0)
+	{
+		OutTokens = HeldTokens;
+		return true;
+	}
+
 	return false;
 }

@@ -46,6 +46,8 @@ class AITOKENCORE_API UAIToken : public UObject
 	GENERATED_BODY()
 
 	friend class UAITokenSource;
+	friend class UAITokenHolder;
+	friend class UAITokenContainer;
 
 	FAITokenConditionPredicate AcquireCondition;
 
@@ -60,17 +62,22 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
 
+private:
 	void InitToken(const FGameplayTag InTokenTag, UAITokenSource* InOwnerSource);
 
-	bool AcquireToken(UAITokenHolder* InHolder);
+	bool GrantedTo(UAITokenHolder* InHolder);
 
 	bool LockToken(UAITokenHolder* InHolder);
 
-	bool PreemptToken(UAITokenHolder* InHolder);
+	// bool PreemptToken(UAITokenHolder* InHolder);
 
-	bool ReleaseToken();
+	bool Release();
 
+public:
 	UAITokenSource* GetOwnerSource() const;
+	UAITokenHolder* GetHolder() const;
+
+	bool HasHolder() const;
 };
 
 UCLASS()
@@ -89,4 +96,6 @@ public:
 	void ReleaseAllToken();
 
 	bool TryGetFreeToken(UAIToken*& OutToken);
+
+	bool TryGetAllHeldToken(TArray<UAIToken*>& OutTokens);
 };

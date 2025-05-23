@@ -2,6 +2,7 @@
 
 
 #include "Core/AITokenSource.h"
+#include "Core/AITokenHolder.h"
 
 void UAITokenSource::AddOrResetToken(UAITokenData* TokenData, const int TokenCount)
 {
@@ -22,7 +23,7 @@ void UAITokenSource::AddOrResetToken(UAITokenData* TokenData, const int TokenCou
 void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSourceDefinition)
 {
 	Tokens.Empty();
-	
+
 	for (const auto& SourceToken : TokenSourceDefinition.SourceTokens)
 	{
 		if (IsValid(SourceToken.Key) && SourceToken.Value > 0)
@@ -34,7 +35,12 @@ void UAITokenSource::InitTokenSource(const FAITokenSourceDefinition& TokenSource
 
 UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag)
 {
-	if (!Tokens.Contains(TokenTag) || !Tokens[TokenTag])
+	if (!Tokens.Contains(TokenTag))
+	{
+		return nullptr;
+	}
+
+	if (!IsValid(Tokens[TokenTag]))
 	{
 		return nullptr;
 	}
@@ -44,9 +50,18 @@ UAIToken* UAITokenSource::TakeToken(const FGameplayTag& TokenTag)
 	{
 		return Token;
 	}
-	else
+
+	// TODO: Try to preempt token
+	TArray<UAIToken*> TokensToPreempt;
+	if (Tokens[TokenTag]->TryGetAllHeldToken(TokensToPreempt))
 	{
-		// TODO: Try to preempt token
+		for (UAIToken* TokenToPreempt : TokensToPreempt)
+		{
+			if (TokenToPreempt->GetHolder()->ReleaseHeldToken())
+			{
+				return TokenToPreempt;
+			}
+		}
 	}
 
 	return nullptr;

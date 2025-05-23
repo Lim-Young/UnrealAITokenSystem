@@ -26,7 +26,7 @@ protected:
 	uint8 Priority = 0;
 
 private:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<UAITokenHolder> AITokenHolder;
 
 	void InitAITokenHolder();

@@ -44,7 +44,7 @@ bool UAITokenHolder::AcquireTokenFromSource(UAITokenSource* Source, const FGamep
 	UAIToken* Token = Source->TakeToken(TokenTag);
 	if (IsValid(Token))
 	{
-		if (Token->AcquireToken(this))
+		if (Token->GrantedTo(this))
 		{
 			HeldToken = Token;
 			return true;
@@ -63,7 +63,7 @@ bool UAITokenHolder::ReleaseHeldToken()
 		return true;
 	}
 
-	if (HeldToken->ReleaseToken())
+	if (HeldToken->Release())
 	{
 		HeldToken = nullptr;
 		return true;

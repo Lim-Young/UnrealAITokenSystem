@@ -1,4 +1,4 @@
-﻿// Copyright Blazebone Game Studio
+﻿// Copyright Lim Young.
 
 #pragma once
 
@@ -19,9 +19,7 @@ protected:
 	bool bReverse = false;
 
 public:
-	virtual void Initialize(const FAITokenConditionContext& Context);
 	virtual bool Evaluate(const FAITokenConditionContext& Context) const;
-	virtual void Cleanup(const FAITokenConditionContext& Context);
 };
 
 UCLASS()
@@ -33,9 +31,7 @@ class AITOKENCORE_API UAITokenConditionPredicate_Single : public UAITokenConditi
 	TObjectPtr<UAITokenCondition> Condition = nullptr;
 
 protected:
-	virtual void Initialize(const FAITokenConditionContext& Context) override;
 	virtual bool Evaluate(const FAITokenConditionContext& Context) const override;
-	virtual void Cleanup(const FAITokenConditionContext& Context) override;
 };
 
 UCLASS()

@@ -17,7 +17,6 @@ void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwne
 	OwnerSource = InOwnerSource;
 
 	AcquireCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenAcquireCondition, this);
-	AcquireCondition->Initialize(FAITokenConditionContext(InOwnerSource, nullptr));
 }
 
 bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
@@ -91,8 +90,6 @@ bool UAIToken::Release()
 
 	if (TokenState == EAITokenState::Held)
 	{
-		CleanupAcquireCondition(FAITokenConditionContext(OwnerSource, Holder));
-
 		TokenState = EAITokenState::Free;
 		Holder = nullptr;
 		return true;
@@ -100,16 +97,6 @@ bool UAIToken::Release()
 
 	UE_LOG(LogAITokenSystem, Verbose, TEXT("Token is not held, cannot release"));
 	return false;
-}
-
-void UAIToken::InitializeAcquireCondition(const FAITokenConditionContext& Context) const
-{
-	if (!IsValid(AcquireCondition))
-	{
-		return;
-	}
-
-	AcquireCondition->Initialize(Context);
 }
 
 bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context) const
@@ -120,16 +107,6 @@ bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context) co
 	}
 
 	return AcquireCondition->Evaluate(Context);
-}
-
-void UAIToken::CleanupAcquireCondition(const FAITokenConditionContext& Context) const
-{
-	if (!IsValid(AcquireCondition))
-	{
-		return;
-	}
-
-	AcquireCondition->Cleanup(Context);
 }
 
 UAITokenSource* UAIToken::GetOwnerSource() const

@@ -6,7 +6,6 @@
 #include "GameplayTagContainer.h"
 #include "NativeGameplayTags.h"
 #include "Condition/AITokenConditionPredicate.h"
-#include "StructUtils/InstancedStruct.h"
 #include "UObject/Object.h"
 #include "AIToken.generated.h"
 
@@ -71,10 +70,7 @@ private:
 	// bool PreemptToken(UAITokenHolder* InHolder);
 	bool Release();
 
-private:
-	void InitializeAcquireCondition(const FAITokenConditionContext& Context) const;
 	bool CheckAcquireCondition(const FAITokenConditionContext& Context) const;
-	void CleanupAcquireCondition(const FAITokenConditionContext& Context) const;
 
 public:
 	UAITokenSource* GetOwnerSource() const;
@@ -90,7 +86,7 @@ class AITOKENCORE_API UAITokenContainer : public UObject
 
 	UPROPERTY()
 	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
-	
+
 public:
 	static UAITokenContainer* NewAITokenContainer(const UAITokenData* TokenData, int TokenCount, UObject* Outer);
 

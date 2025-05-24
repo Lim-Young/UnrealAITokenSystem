@@ -1,30 +1,12 @@
-﻿// Copyright Blazebone Game Studio
+﻿// Copyright Lim Young.
 
 
 #include "Condition/AITokenConditionPredicate.h"
 
 
-void UAITokenConditionPredicate::Initialize(const FAITokenConditionContext& Context)
-{
-}
-
 bool UAITokenConditionPredicate::Evaluate(const FAITokenConditionContext& Context) const
 {
 	return true;
-}
-
-void UAITokenConditionPredicate::Cleanup(const FAITokenConditionContext& Context)
-{
-}
-
-void UAITokenConditionPredicate_Single::Initialize(const FAITokenConditionContext& Context)
-{
-	if (!IsValid(Condition))
-	{
-		return;
-	}
-
-	Condition->Initialize(Context);
 }
 
 bool UAITokenConditionPredicate_Single::Evaluate(const FAITokenConditionContext& Context) const
@@ -34,17 +16,7 @@ bool UAITokenConditionPredicate_Single::Evaluate(const FAITokenConditionContext&
 		return false;
 	}
 
-	return Condition->EvaluateCondition(Context);
-}
-
-void UAITokenConditionPredicate_Single::Cleanup(const FAITokenConditionContext& Context)
-{
-	if (!IsValid(Condition))
-	{
-		return;
-	}
-
-	Condition->Cleanup(Context);
+	return bReverse ? !Condition->EvaluateCondition(Context) : Condition->EvaluateCondition(Context);
 }
 
 bool UAITokenConditionPredicate_And::Evaluate(const FAITokenConditionContext& Context) const

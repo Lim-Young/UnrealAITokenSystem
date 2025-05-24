@@ -1,4 +1,4 @@
-﻿// Copyright Blazebone Game Studio
+﻿// Copyright Lim Young.
 
 #pragma once
 
@@ -39,11 +39,5 @@ class AITOKENCORE_API UAITokenCondition : public UObject
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void Initialize(FAITokenConditionContext Context);
-
-	UFUNCTION(BlueprintNativeEvent)
-	bool EvaluateCondition(FAITokenConditionContext Context);
-
-	UFUNCTION(BlueprintNativeEvent)
-	void Cleanup(FAITokenConditionContext Context);
+	bool EvaluateCondition(FAITokenConditionContext Context) const;
 };

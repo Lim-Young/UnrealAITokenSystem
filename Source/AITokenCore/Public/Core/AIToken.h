@@ -31,6 +31,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
 	FGameplayTag TokenTag;
 
+	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
+	float Cooldown = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
+	bool bUseRealTimeCooldown = false;
+
 	UPROPERTY(EditAnywhere, Category = "Token Condition")
 	TObjectPtr<UAITokenConditionPredicate> AITokenAcquireCondition;
 };
@@ -50,7 +56,7 @@ class AITOKENCORE_API UAIToken : public UObject
 	UPROPERTY()
 	TObjectPtr<UAITokenConditionPredicate> AcquireCondition;
 
-public:
+private:
 	FGameplayTag TokenTag;
 
 	EAITokenState TokenState = EAITokenState::Free;
@@ -61,6 +67,11 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAITokenSource> OwnerSource = nullptr;
 
+	float Cooldown = 0.0f;
+	bool bUseRealTimeCooldown = false;
+	bool bOnCoolDown = false;
+	float CooldownStart = 0.0f;
+
 private:
 	void InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwnerSource);
 
@@ -70,11 +81,12 @@ private:
 	// bool PreemptToken(UAITokenHolder* InHolder);
 	bool Release();
 
-	bool CheckAcquireCondition(const FAITokenConditionContext& Context) const;
+	bool CheckAcquireCondition(const FAITokenConditionContext& Context);
 
 public:
 	UAITokenSource* GetOwnerSource() const;
 	UAITokenHolder* GetHolder() const;
+	FGameplayTag GetTokenTag() const;
 
 	bool HasHolder() const;
 };

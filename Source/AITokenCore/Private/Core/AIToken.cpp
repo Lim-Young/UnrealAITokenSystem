@@ -5,6 +5,7 @@
 
 #include "Core/AITokenHolder.h"
 #include "Core/AITokenSource.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogAITokenSystem);
 
@@ -14,6 +15,8 @@ void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwne
 {
 	TokenState = EAITokenState::Free;
 	TokenTag = InTokenData->TokenTag;
+	Cooldown = InTokenData->Cooldown;
+	bUseRealTimeCooldown = InTokenData->bUseRealTimeCooldown;
 	OwnerSource = InOwnerSource;
 
 	AcquireCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenAcquireCondition, this);
@@ -92,6 +95,20 @@ bool UAIToken::Release()
 	{
 		TokenState = EAITokenState::Free;
 		Holder = nullptr;
+
+		if (Cooldown > 0.0f)
+		{
+			bOnCoolDown = true;
+			if (bUseRealTimeCooldown)
+			{
+				CooldownStart = UGameplayStatics::GetRealTimeSeconds(OwnerSource);
+			}
+			else
+			{
+				CooldownStart = UGameplayStatics::GetTimeSeconds(OwnerSource);
+			}
+		}
+
 		return true;
 	}
 
@@ -99,11 +116,33 @@ bool UAIToken::Release()
 	return false;
 }
 
-bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context) const
+bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context)
 {
 	if (!IsValid(AcquireCondition))
 	{
 		return true;
+	}
+
+	if (bOnCoolDown)
+	{
+		float CurrentTime;
+		if (bUseRealTimeCooldown)
+		{
+			CurrentTime = UGameplayStatics::GetRealTimeSeconds(OwnerSource);
+		}
+		else
+		{
+			CurrentTime = UGameplayStatics::GetTimeSeconds(OwnerSource);
+		}
+
+		if (CurrentTime - CooldownStart > Cooldown)
+		{
+			bOnCoolDown = false;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	return AcquireCondition->Evaluate(Context);
@@ -117,6 +156,11 @@ UAITokenSource* UAIToken::GetOwnerSource() const
 UAITokenHolder* UAIToken::GetHolder() const
 {
 	return Holder;
+}
+
+FGameplayTag UAIToken::GetTokenTag() const
+{
+	return TokenTag;
 }
 
 bool UAIToken::HasHolder() const

@@ -41,7 +41,7 @@ FGameplayTag UAITokenHolderComponent::GetHeldTokenTag() const
 	{
 		if (const UAIToken* Token = AITokenHolder->GetHeldToken())
 		{
-			return Token->TokenTag;
+			return Token->GetTokenTag();
 		}
 	}
 

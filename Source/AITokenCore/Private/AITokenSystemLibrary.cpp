@@ -1,9 +1,9 @@
-﻿// Copyright Blazebone Game Studio
+﻿// Copyright Lim Young.
 
 
-#include "AITokenSystemBlueprintFunctionLibrary.h"
+#include "AITokenSystemLibrary.h"
 
-bool UAITokenSystemBlueprintFunctionLibrary::AcquireAITokenFromSourceComponent(UAITokenHolderComponent* HolderComponent,
+bool UAITokenSystemLibrary::AcquireAITokenFromSourceComponent(UAITokenHolderComponent* HolderComponent,
                                                                                UAITokenSourceComponent* SourceComponent,
                                                                                const FGameplayTag TokenTag)
 {
@@ -15,7 +15,7 @@ bool UAITokenSystemBlueprintFunctionLibrary::AcquireAITokenFromSourceComponent(U
 	return AcquireAITokenFromSource(HolderComponent->GetAITokenHolder(), SourceComponent->GetAITokenSource(), TokenTag);
 }
 
-bool UAITokenSystemBlueprintFunctionLibrary::AcquireAITokenFromSource(UAITokenHolder* Holder, UAITokenSource* Source,
+bool UAITokenSystemLibrary::AcquireAITokenFromSource(UAITokenHolder* Holder, UAITokenSource* Source,
                                                                       const FGameplayTag TokenTag)
 {
 	if (!IsValid(Holder) || !IsValid(Source))
@@ -26,7 +26,7 @@ bool UAITokenSystemBlueprintFunctionLibrary::AcquireAITokenFromSource(UAITokenHo
 	return Holder->AcquireTokenFromSource(Source, TokenTag);
 }
 
-bool UAITokenSystemBlueprintFunctionLibrary::ReleaseAITokenToSourceComponent(UAITokenHolderComponent* HolderComponent)
+bool UAITokenSystemLibrary::ReleaseAITokenToSourceComponent(UAITokenHolderComponent* HolderComponent)
 {
 	if (!IsValid(HolderComponent))
 	{
@@ -36,7 +36,7 @@ bool UAITokenSystemBlueprintFunctionLibrary::ReleaseAITokenToSourceComponent(UAI
 	return ReleaseAITokenToSource(HolderComponent->GetAITokenHolder());
 }
 
-bool UAITokenSystemBlueprintFunctionLibrary::ReleaseAITokenToSource(UAITokenHolder* Holder)
+bool UAITokenSystemLibrary::ReleaseAITokenToSource(UAITokenHolder* Holder)
 {
 	if (!IsValid(Holder))
 	{
@@ -46,7 +46,7 @@ bool UAITokenSystemBlueprintFunctionLibrary::ReleaseAITokenToSource(UAITokenHold
 	return Holder->ReleaseHeldToken();
 }
 
-bool UAITokenSystemBlueprintFunctionLibrary::LockHeldToken(UAITokenHolderComponent* HolderComponent)
+bool UAITokenSystemLibrary::LockHeldToken(UAITokenHolderComponent* HolderComponent)
 {
 	if (IsValid(HolderComponent) && IsValid(HolderComponent->GetAITokenHolder()))
 	{
@@ -56,7 +56,7 @@ bool UAITokenSystemBlueprintFunctionLibrary::LockHeldToken(UAITokenHolderCompone
 	return false;
 }
 
-bool UAITokenSystemBlueprintFunctionLibrary::UnlockHeldToken(UAITokenHolderComponent* HolderComponent)
+bool UAITokenSystemLibrary::UnlockHeldToken(UAITokenHolderComponent* HolderComponent)
 {
 	if (IsValid(HolderComponent) && IsValid(HolderComponent->GetAITokenHolder()))
 	{

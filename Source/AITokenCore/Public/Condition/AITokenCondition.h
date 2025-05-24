@@ -27,17 +27,40 @@ struct AITOKENCORE_API FAITokenConditionContext
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAITokenHolder> TokenHolder = nullptr;
+
+	bool HasTokenSource() const
+	{
+		return TokenSource != nullptr;
+	}
+
+	bool HasTokenHolder() const
+	{
+		return TokenHolder != nullptr;
+	}
+
+	bool IsValidTokenSourceAndHolder() const
+	{
+		return HasTokenSource() && HasTokenHolder();
+	}
 };
 
 /**
  * 
  */
-UCLASS(Abstract, DefaultToInstanced, EditInlineNew, Blueprintable)
+UCLASS(Abstract, DefaultToInstanced, EditInlineNew, Blueprintable, CollapseCategories)
 class AITOKENCORE_API UAITokenCondition : public UObject
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditAnywhere, Category = "Base")
+	bool bReverse = false;
+
 public:
+	UFUNCTION(BlueprintCallable)
+	bool EvaluateCondition(const FAITokenConditionContext& Context) const;
+
+protected:
 	UFUNCTION(BlueprintNativeEvent)
-	bool EvaluateCondition(FAITokenConditionContext Context) const;
+	bool Evaluate(const FAITokenConditionContext& Context) const;
 };

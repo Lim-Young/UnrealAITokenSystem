@@ -1,4 +1,4 @@
-﻿// Copyright Blazebone Game Studio
+﻿// Copyright Lim Young.
 
 #pragma once
 
@@ -6,13 +6,13 @@
 #include "Component/AITokenHolderComponent.h"
 #include "Component/AITokenSourceComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "AITokenSystemBlueprintFunctionLibrary.generated.h"
+#include "AITokenSystemLibrary.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AITOKENCORE_API UAITokenSystemBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
+class AITOKENCORE_API UAITokenSystemLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

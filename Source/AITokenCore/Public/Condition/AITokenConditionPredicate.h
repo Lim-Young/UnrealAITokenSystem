@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract, BlueprintType, DefaultToInstanced, EditInlineNew)
+UCLASS(Abstract, BlueprintType, DefaultToInstanced, EditInlineNew, CollapseCategories)
 class AITOKENCORE_API UAITokenConditionPredicate : public UObject
 {
 	GENERATED_BODY()

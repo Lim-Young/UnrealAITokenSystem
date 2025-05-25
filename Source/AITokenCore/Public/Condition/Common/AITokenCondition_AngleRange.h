@@ -8,7 +8,8 @@
 #include "AITokenCondition_AngleRange.generated.h"
 
 /**
- * 
+ * Use this condition to detect whether the angle between the forward direction of the Source
+ * and the direction vector from the Source Actor to the Holder Actor falls within the specified range.
  */
 UCLASS(DisplayName = "Angle Range")
 class AITOKENCORE_API UAITokenCondition_AngleRange : public UAITokenCondition_ActorContextBase

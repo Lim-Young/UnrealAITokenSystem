@@ -6,10 +6,40 @@
 #include "Core/AITokenHolder.h"
 #include "Core/AITokenSource.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/DataValidation.h"
 
 DEFINE_LOG_CATEGORY(LogAITokenSystem);
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(AIToken, "AIToken", "AI token root tag");
+
+EDataValidationResult UAITokenData::IsDataValid(FDataValidationContext& Context) const
+{
+	if (Super::IsDataValid(Context) == EDataValidationResult::Invalid)
+	{
+		return EDataValidationResult::Invalid;
+	}
+
+	if (!TokenTag.IsValid())
+	{
+		Context.AddError(
+			NSLOCTEXT("AIToken", "TokenTagInvalid",
+			          "TokenTag is Empty or Invalid. Please set a valid GameplayTag for the token."));
+		return EDataValidationResult::Invalid;
+	}
+
+	if (!TokenTag.MatchesTag(AIToken))
+	{
+		Context.AddError(
+			FText::Format(
+				NSLOCTEXT("AIToken", "TokenTagNotMatch", "TokenTag {0} does not match \"AIToken\" root tag."),
+				FText::FromName(TokenTag.GetTagName())
+			)
+		);
+		return EDataValidationResult::Invalid;
+	}
+
+	return EDataValidationResult::Valid;
+}
 
 void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwnerSource)
 {

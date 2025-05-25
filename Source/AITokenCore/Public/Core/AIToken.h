@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Token Condition")
 	TObjectPtr<UAITokenConditionPredicate> AITokenAcquireCondition;
 
+	UPROPERTY(EditAnywhere, Category = "Token Condition")
+	TObjectPtr<UAITokenConditionPredicate> AITokenPreemptCondition;
+
 	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
 };
 
@@ -57,6 +60,9 @@ class AITOKENCORE_API UAIToken : public UObject
 
 	UPROPERTY()
 	TObjectPtr<UAITokenConditionPredicate> AcquireCondition;
+
+	UPROPERTY()
+	TObjectPtr<UAITokenConditionPredicate> PreemptCondition;
 
 private:
 	FGameplayTag TokenTag;
@@ -84,8 +90,10 @@ private:
 	bool Release();
 
 	bool CheckAcquireCondition(const FAITokenConditionContext& Context);
+	bool CheckPreemptCondition(const FAITokenConditionContext& Context) const;
 
 public:
+	FAITokenConditionContext GetSelfConditionContext() const;
 	UAITokenSource* GetOwnerSource() const;
 	UAITokenHolder* GetHolder() const;
 	FGameplayTag GetTokenTag() const;
@@ -113,5 +121,5 @@ public:
 
 	bool TryGetCanAcquireToken(UAITokenHolder* Holder, UAIToken*& OutToken);
 
-	bool TryGetAllCanPreemptTokens(TArray<UAIToken*>& OutTokens);
+	bool TryGetAllCanPreemptTokens(UAITokenHolder* Holder, TArray<UAIToken*>& OutTokens);
 };

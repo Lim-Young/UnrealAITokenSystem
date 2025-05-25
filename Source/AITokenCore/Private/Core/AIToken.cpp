@@ -50,6 +50,7 @@ void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwne
 	OwnerSource = InOwnerSource;
 
 	AcquireCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenAcquireCondition, this);
+	PreemptCondition = DuplicateObject<UAITokenConditionPredicate>(InTokenData->AITokenPreemptCondition, this);
 }
 
 bool UAIToken::GrantedTo(UAITokenHolder* InHolder)
@@ -178,6 +179,32 @@ bool UAIToken::CheckAcquireCondition(const FAITokenConditionContext& Context)
 	return AcquireCondition->Evaluate(Context);
 }
 
+bool UAIToken::CheckPreemptCondition(const FAITokenConditionContext& Context) const
+{
+	if (!IsValid(Holder) || !Context.HasTokenHolder())
+	{
+		checkNoEntry();
+		return false;
+	}
+
+	if (Holder->TokenHolderConfig.Priority > Context.TokenHolder->TokenHolderConfig.Priority)
+	{
+		return false;
+	}
+
+	if (!IsValid(PreemptCondition))
+	{
+		return true;
+	}
+
+	return PreemptCondition->Evaluate(Context);
+}
+
+FAITokenConditionContext UAIToken::GetSelfConditionContext() const
+{
+	return FAITokenConditionContext(OwnerSource, Holder);
+}
+
 UAITokenSource* UAIToken::GetOwnerSource() const
 {
 	return OwnerSource;
@@ -271,7 +298,7 @@ bool UAITokenContainer::TryGetCanAcquireToken(UAITokenHolder* Holder, UAIToken*&
 	return false;
 }
 
-bool UAITokenContainer::TryGetAllCanPreemptTokens(TArray<UAIToken*>& OutTokens)
+bool UAITokenContainer::TryGetAllCanPreemptTokens(UAITokenHolder* Holder, TArray<UAIToken*>& OutTokens)
 {
 	TArray<UAIToken*> HeldTokens;
 
@@ -279,6 +306,17 @@ bool UAITokenContainer::TryGetAllCanPreemptTokens(TArray<UAIToken*>& OutTokens)
 	{
 		if (IsValid(Token) && Token->TokenState == EAITokenState::Held)
 		{
+			if (!Token->GetHolder()->TokenHolderConfig.bAllowPreempt)
+			{
+				continue;
+			}
+
+			// If the token current holder cannot preempt, that is we need.
+			if (Token->CheckPreemptCondition(Token->GetSelfConditionContext()))
+			{
+				continue;
+			}
+
 			HeldTokens.Add(Token);
 		}
 	}

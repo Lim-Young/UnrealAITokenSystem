@@ -26,7 +26,7 @@ void UAITokenHolderComponent::InitAITokenHolder()
 		AITokenHolder = NewObject<UAITokenHolder>(this);
 		check(AITokenHolder);
 
-		AITokenHolder->InitTokenHolder(Priority);
+		AITokenHolder->InitTokenHolder(AITokenHolderConfig);
 	}
 }
 

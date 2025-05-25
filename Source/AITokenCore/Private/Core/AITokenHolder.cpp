@@ -3,9 +3,9 @@
 
 #include "Core/AITokenHolder.h"
 
-void UAITokenHolder::InitTokenHolder(const uint8 InPriority)
+void UAITokenHolder::InitTokenHolder(const FAITokenHolderConfig& InTokenHolderConfig)
 {
-	Priority = InPriority;
+	TokenHolderConfig = InTokenHolderConfig;
 	HeldToken = nullptr;
 }
 

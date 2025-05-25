@@ -16,14 +16,12 @@ class AITOKENCORE_API UAITokenHolderComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UAITokenHolderComponent();
-
-protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AITokenHolder")
-	uint8 Priority = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FAITokenHolderConfig AITokenHolderConfig;
 
 private:
 	UPROPERTY(Transient)

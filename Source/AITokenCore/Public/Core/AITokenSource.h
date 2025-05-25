@@ -27,9 +27,13 @@ class AITOKENCORE_API UAITokenSource : public UObject
 	UPROPERTY()
 	TMap<FGameplayTag, TObjectPtr<UAITokenContainer>> Tokens;
 
+	UPROPERTY()
+	TMap<FGameplayTag, TObjectPtr<UAIToken>> PreemptTestTokens;
+
 	UAITokenSource() = default;
-	
+
 	void AddOrResetToken(UAITokenData* TokenData, const int TokenCount = 1);
+	void CreatePreemptTestToken(const TObjectPtr<UAITokenData>& TokenData);
 
 public:
 	void InitTokenSource(const FAITokenSourceDefinition& TokenSourceDefinition);

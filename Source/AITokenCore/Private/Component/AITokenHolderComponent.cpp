@@ -47,3 +47,8 @@ FGameplayTag UAITokenHolderComponent::GetHeldTokenTag() const
 
 	return FGameplayTag();
 }
+
+bool UAITokenHolderComponent::IsHoldingToken() const
+{
+	return IsValid(AITokenHolder) && AITokenHolder->IsHoldingToken();
+}

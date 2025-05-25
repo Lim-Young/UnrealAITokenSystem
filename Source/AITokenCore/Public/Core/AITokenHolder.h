@@ -45,7 +45,7 @@ struct FAITokenHolderConfig
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AITokenHolder|Preempt",
 		meta = (EditCondition = "bAllowPreempt", EditConditionHides))
-	EAITokenPreemptResultChooseType PreemptResultChooseType = EAITokenPreemptResultChooseType::FirstMatch;
+	EAITokenPreemptResultChooseType PreemptResultChooseType = EAITokenPreemptResultChooseType::Random;
 };
 
 /**

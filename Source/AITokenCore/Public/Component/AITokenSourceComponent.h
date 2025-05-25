@@ -8,7 +8,7 @@
 #include "AITokenSourceComponent.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(AITokenSystem), meta=(BlueprintSpawnableComponent))
 class AITOKENCORE_API UAITokenSourceComponent : public UActorComponent
 {
 	GENERATED_BODY()

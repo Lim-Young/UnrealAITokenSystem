@@ -4,8 +4,8 @@
 #include "AITokenSystemLibrary.h"
 
 bool UAITokenSystemLibrary::AcquireAITokenFromSourceComponent(UAITokenHolderComponent* HolderComponent,
-                                                                               UAITokenSourceComponent* SourceComponent,
-                                                                               const FGameplayTag TokenTag)
+                                                              UAITokenSourceComponent* SourceComponent,
+                                                              const FGameplayTag TokenTag)
 {
 	if (!IsValid(HolderComponent) || !IsValid(SourceComponent))
 	{
@@ -16,7 +16,7 @@ bool UAITokenSystemLibrary::AcquireAITokenFromSourceComponent(UAITokenHolderComp
 }
 
 bool UAITokenSystemLibrary::AcquireAITokenFromSource(UAITokenHolder* Holder, UAITokenSource* Source,
-                                                                      const FGameplayTag TokenTag)
+                                                     const FGameplayTag TokenTag)
 {
 	if (!IsValid(Holder) || !IsValid(Source))
 	{
@@ -64,4 +64,40 @@ bool UAITokenSystemLibrary::UnlockHeldToken(UAITokenHolderComponent* HolderCompo
 	}
 
 	return false;
+}
+
+bool UAITokenSystemLibrary::GetAITokenSourceComponentFromActor(AActor* InActor,
+                                                               UAITokenSourceComponent*& OutSourceComponent)
+{
+	if (!IsValid(InActor))
+	{
+		return false;
+	}
+
+	UAITokenSourceComponent* SourceComponent = InActor->GetComponentByClass<UAITokenSourceComponent>();
+	if (!IsValid(SourceComponent))
+	{
+		return false;
+	}
+
+	OutSourceComponent = SourceComponent;
+	return true;
+}
+
+bool UAITokenSystemLibrary::GetAITokenHolderComponentFromActor(AActor* InActor,
+                                                               UAITokenHolderComponent*& OutHolderComponent)
+{
+	if (!IsValid(InActor))
+	{
+		return false;
+	}
+
+	UAITokenHolderComponent* HolderComponent = InActor->GetComponentByClass<UAITokenHolderComponent>();
+	if (!IsValid(HolderComponent))
+	{
+		return false;
+	}
+
+	OutHolderComponent = HolderComponent;
+	return true;
 }

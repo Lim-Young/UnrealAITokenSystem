@@ -31,10 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
 	FGameplayTag TokenTag;
 
-	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
+	UPROPERTY(EditAnywhere, Category = "Token Config")
 	float Cooldown = 0.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Token Config", meta = (Categories = AIToken))
+	UPROPERTY(EditAnywhere, Category = "Token Config")
 	bool bUseRealTimeCooldown = false;
 
 	UPROPERTY(EditAnywhere, Category = "Token Condition")

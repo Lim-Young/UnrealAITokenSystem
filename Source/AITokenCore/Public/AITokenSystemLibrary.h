@@ -37,4 +37,10 @@ class AITOKENCORE_API UAITokenSystemLibrary : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, Category = "AITokenSystem", DisplayName = "Unlock Held Token",
 		meta = (GameplayTagFilter = AIToken))
 	static bool UnlockHeldToken(UAITokenHolderComponent* HolderComponent);
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenSystem", DisplayName = "Get AI Token Source Component")
+	static bool GetAITokenSourceComponentFromActor(AActor* InActor, UAITokenSourceComponent*& OutSourceComponent);
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenSystem", DisplayName = "Get AI Token Holder Component")
+	static bool GetAITokenHolderComponentFromActor(AActor* InActor, UAITokenHolderComponent*& OutHolderComponent);
 };

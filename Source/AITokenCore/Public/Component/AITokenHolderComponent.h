@@ -8,7 +8,7 @@
 #include "AITokenHolderComponent.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(AITokenSystem), meta=(BlueprintSpawnableComponent))
 class AITOKENCORE_API UAITokenHolderComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -34,4 +34,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AITokenHolder")
 	FGameplayTag GetHeldTokenTag() const;
+
+	UFUNCTION(BlueprintCallable, Category = "AITokenHolder")
+	bool IsHoldingToken() const;
 };

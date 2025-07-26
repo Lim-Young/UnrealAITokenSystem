@@ -1,3 +1,6 @@
+![GitHub License](https://img.shields.io/github/license/Lim-Young/UnrealAITokenSystem)
+![Unreal Engine](https://img.shields.io/badge/Unreal-5.6-dea309?style=flat&logo=unrealengine)
+
 # UnrealAITokenSystem
 > Language: [English](README.md), [中文](README-CN.md)
 

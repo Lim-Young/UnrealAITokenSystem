@@ -57,7 +57,6 @@ private:
 	bool bReverse = false;
 
 public:
-	UFUNCTION(BlueprintCallable)
 	bool EvaluateCondition(const FAITokenConditionContext& Context) const;
 
 protected:

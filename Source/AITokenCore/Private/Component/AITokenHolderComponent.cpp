@@ -10,7 +10,6 @@ UAITokenHolderComponent::UAITokenHolderComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
 // Called when the game starts
 void UAITokenHolderComponent::BeginPlay()
 {

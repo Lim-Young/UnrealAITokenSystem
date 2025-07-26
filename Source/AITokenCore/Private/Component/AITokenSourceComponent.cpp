@@ -3,7 +3,9 @@
 
 #include "Component/AITokenSourceComponent.h"
 
+#if WITH_EDITOR
 #include "Misc/DataValidation.h"
+#endif
 
 
 // Sets default values for this component's properties
@@ -12,6 +14,7 @@ UAITokenSourceComponent::UAITokenSourceComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+#if WITH_EDITOR
 EDataValidationResult UAITokenSourceComponent::IsDataValid(FDataValidationContext& Context) const
 {
 	if (Super::IsDataValid(Context) == EDataValidationResult::Invalid)
@@ -85,7 +88,7 @@ EDataValidationResult UAITokenSourceComponent::IsDataValid(FDataValidationContex
 
 	return EDataValidationResult::Valid;
 }
-
+#endif
 
 // Called when the game starts
 void UAITokenSourceComponent::BeginPlay()

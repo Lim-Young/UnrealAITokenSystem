@@ -16,7 +16,9 @@ class AITOKENCORE_API UAITokenSourceComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UAITokenSourceComponent();
+#if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif
 
 protected:
 	// Called when the game starts

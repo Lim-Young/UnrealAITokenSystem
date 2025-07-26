@@ -6,12 +6,15 @@
 #include "Core/AITokenHolder.h"
 #include "Core/AITokenSource.h"
 #include "Kismet/GameplayStatics.h"
+#if WITH_EDITOR
 #include "Misc/DataValidation.h"
+#endif
 
 DEFINE_LOG_CATEGORY(LogAITokenSystem);
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(AIToken, "AIToken", "AI token root tag");
 
+#if WITH_EDITOR
 EDataValidationResult UAITokenData::IsDataValid(FDataValidationContext& Context) const
 {
 	if (Super::IsDataValid(Context) == EDataValidationResult::Invalid)
@@ -40,6 +43,7 @@ EDataValidationResult UAITokenData::IsDataValid(FDataValidationContext& Context)
 
 	return EDataValidationResult::Valid;
 }
+#endif
 
 void UAIToken::InitToken(const UAITokenData* InTokenData, UAITokenSource* InOwnerSource)
 {

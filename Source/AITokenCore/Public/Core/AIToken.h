@@ -43,7 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Token Condition")
 	TObjectPtr<UAITokenConditionPredicate> AITokenPreemptCondition;
 
+#if WITH_EDITOR
 	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif
 };
 
 /**

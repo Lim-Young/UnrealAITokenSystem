@@ -49,26 +49,3 @@ bool UAITokenConditionLibrary::TryGetAITokenSourceActor(const UAITokenSource* AI
 	}
 	return TryGetOuterChainActor(AITokenSource, SourceActor);
 }
-
-template <typename T>
-bool UAITokenConditionLibrary::CompareByOperator(const T& A, const T& B,
-	const EAITokenConditionMathCompareOperator Operator)
-{
-	switch (Operator)
-	{
-	case EAITokenConditionMathCompareOperator::Equal:
-		return A == B;
-	case EAITokenConditionMathCompareOperator::NotEqual:
-		return A != B;
-	case EAITokenConditionMathCompareOperator::GreaterThan:
-		return A > B;
-	case EAITokenConditionMathCompareOperator::GreaterThanOrEqual:
-		return A >= B;
-	case EAITokenConditionMathCompareOperator::LessThan:
-		return A < B;
-	case EAITokenConditionMathCompareOperator::LessThanOrEqual:
-		return A <= B;
-	default:
-		return false;
-	}
-}
